@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+
+<html lang='en'>
+	<head>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+		<script type=text/javascript>
+		  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+		</script>
+		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon-310.png') }}">
+	</head>
+	
+	<body>
+		
+		  
+		<script type="text/javascript">
+	
+		$(document).ready(function(){
+		    $("#fetch").click(function(){
+		    	$("#sung_div").empty();
+		        $.getJSON($SCRIPT_ROOT + "/_test", 		        		  		
+		        
+		        function(data){
+		        	var my_div = document.getElementById('sung_div');
+					$.each(data, function(i, field){
+						$(my_div).append(field + " ");
+					});
+				});
+		        
+		    });
+		});
+		</script>
+		
+		
+		
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$("#state_select").change(function() {
+				$.getJSON($SCRIPT_ROOT + "/_form",
+				function(data) {
+			        $('#result').text(data.result);
+			 
+			      });
+				
+						
+				
+				
+				);
+			});
+		});
+		</script>
+		
+		<!--
+		<script>
+		$(document).ready(function(){
+			$(document).on('submit', '#state_select', function(e) {
+				$('#arf tbody > tr').remove();
+			     $.ajax({
+			        url: $(this).attr('action'),
+			        type: $(this).attr('method'),
+			        data: $(this).serialize(),
+			        success:
+			        	
+			        	function(data){
+			        	var mk_table = '';
+						var arf_div = document.getElementById('arf');
+						$.each(data, function(i, field){
+							mk_table += '<tr><td>' + field['INSTITUTION_STATE'] + '</td> + <td>' + field['INSTITUTION_NAME'] + '</td></tr>';
+					
+							
+						});	
+						$(arf_div).append(mk_table);
+						
+						}
+
+			     
+			    	});
+			    	e.preventDefault();
+				});
+			});
+		</script>
+		-->
+		
+		
+		
+		<h1>jQuery Ajax Test</h1>
+		<p><a href=# id=fetch>Get Data</a></p>
+		<div id="sung_div"></div>
+
+		<form id=state_select action="/_form" method="GET" >
+	        <ul>
+	            <li>State: 
+		            <select id="state" name="state">
+					<option value="">Select a State:</option>
+					<option value="AR">Arkansas</option>
+					<option value="CA">California</option>
+					<option value="NY">New York</option>
+					</select>
+	            </li>
+	        </ul>
+	        <button type="submit">Submit</button>
+	    </form>
+	    
+		<table id="arf" border='1'>
+			<thead>
+				<tr>
+					<th>State</th>
+					<th>Institution</th>
+				</tr>
+			</thead>
+		
+			
+		</table>
+		
+		
+	</body>
+</html>
