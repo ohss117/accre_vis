@@ -31,7 +31,6 @@ def dict_factory(cursor, row):
 
 def connect_db():
     connection = sqlite3.connect(app.config['DATABASE'])
-    connection.row_factory = dict_factory
     return connection
     
 
@@ -55,7 +54,7 @@ def test(methods=['GET']):
     
     my_query = g.db.execute('SELECT INSTITUTION_NAME, INSTITUTION_STATE FROM ACCREDITATION_2015_6_V \
                         WHERE INSTITUTION_STATE = "AR" GROUP BY INSTITUTION_NAME, INSTITUTION_STATE')
-                    
+    
     return json.dumps(my_query.fetchall())
 
 
@@ -63,13 +62,14 @@ def test(methods=['GET']):
 def form(methods=['GET']):
     
     state = request.args.get('state')
-    
+    g.db.row_factory = dict_factory
     my_query = g.db.execute('SELECT INSTITUTION_ID, INSTITUTION_NAME, INSTITUTION_STATE FROM ACCREDITATION_2015_6_V WHERE \
                          INSTITUTION_STATE = ? GROUP BY INSTITUTION_ID, INSTITUTION_NAME, INSTITUTION_STATE limit 10', [state])
     
    
     
-    return jsonify(result=my_query.fetchall())
+    return jsonify(my_result=my_query.fetchall())
+    
     
     
 @app.route('/')

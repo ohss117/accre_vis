@@ -33,54 +33,47 @@
 		</script>
 		
 		
-		
-		<script type="text/javascript">
-		$(document).ready(function(){
-			$("#state_select").change(function() {
-				$.getJSON($SCRIPT_ROOT + "/_form",
-				function(data) {
-			        $('#result').text(data.result);
-			 
-			      });
-				
+		<script>
+		$(document).ready(function() {
+		    $(document).on('submit', '#state_select', function(e) {
+		        $('#arf tbody > tr').remove();
+		        $.ajax({
+		            url: $(this).attr('action'),
+		            type: $(this).attr('method'),
+		            data: $(this).serialize(),
+
+		            success:
+
+		                function(data) {
+		            	
+		            	var mk_table = '';
+						var arf_div = document.getElementById('arf');
 						
-				
-				
-				);
-			});
+						if(data.my_result.length != 0){
+							$.each(data.my_result, function(item, field){
+								
+								mk_table += '<tr><td>' + field.INSTITUTION_STATE + '</td><td>' + field.INSTITUTION_NAME+ '</td></tr>';
+							
+
+							});
+						} else{
+							window.alert('Please choose a state');
+						}
+						
+						$(arf_div).append(mk_table);
+		                
+
+		            }
+
+
+		        });
+
+
+		        e.preventDefault();
+		    });
 		});
 		</script>
 		
-		<!--
-		<script>
-		$(document).ready(function(){
-			$(document).on('submit', '#state_select', function(e) {
-				$('#arf tbody > tr').remove();
-			     $.ajax({
-			        url: $(this).attr('action'),
-			        type: $(this).attr('method'),
-			        data: $(this).serialize(),
-			        success:
-			        	
-			        	function(data){
-			        	var mk_table = '';
-						var arf_div = document.getElementById('arf');
-						$.each(data, function(i, field){
-							mk_table += '<tr><td>' + field['INSTITUTION_STATE'] + '</td> + <td>' + field['INSTITUTION_NAME'] + '</td></tr>';
-					
-							
-						});	
-						$(arf_div).append(mk_table);
-						
-						}
-
-			     
-			    	});
-			    	e.preventDefault();
-				});
-			});
-		</script>
-		-->
 		
 		
 		
