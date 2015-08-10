@@ -70,7 +70,15 @@ def form(methods=['GET']):
     
     return jsonify(my_result=my_query.fetchall())
     
+@app.route('/_search_schools')
+def search_schools(methods=['GET']):
+    name = request.args.get('term')
     
+    search_term = "%" + name + "%"
+    g.db.row_factory = lambda cursor, row: row[0]
+    query = g.db.execute('SELECT * FROM SCHOOL_NAMES WHERE trim(lower(INSTITUTION_NAME)) LIKE ?', [search_term])
+    
+    return jsonify(names = query.fetchall())    
     
 @app.route('/')
 def index():

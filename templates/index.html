@@ -8,12 +8,14 @@
 		  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		</script>
 		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon-310.png') }}">
+		<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 	</head>
+
 	
 	<body>
-		
-		  
 		<script type="text/javascript">
 	
 		$(document).ready(function(){
@@ -26,6 +28,14 @@
 					$.each(data, function(i, field){
 						$(my_div).append(field + " ");
 					});
+					var clear_button = document.createElement("BUTTON");
+					var t = document.createTextNode("Clear");
+					clear_button.appendChild(t);
+					clear_button.addEventListener('click', function(){
+						$('#sung_div').empty();
+					}, false);
+					
+					my_div.appendChild(clear_button);
 				});
 		        
 		    });
@@ -36,39 +46,26 @@
 		<script>
 		$(document).ready(function() {
 		    $(document).on('submit', '#state_select', function(e) {
-		        $('#arf tbody > tr').remove();
+		        $('#state_info tbody > tr').remove();
 		        $.ajax({
 		            url: $(this).attr('action'),
 		            type: $(this).attr('method'),
 		            data: $(this).serialize(),
-
 		            success:
-
 		                function(data) {
-		            	
-		            	var mk_table = '';
-						var arf_div = document.getElementById('arf');
-						
-						if(data.my_result.length != 0){
-							$.each(data.my_result, function(item, field){
-								
-								mk_table += '<tr><td>' + field.INSTITUTION_STATE + '</td><td>' + field.INSTITUTION_NAME+ '</td></tr>';
+			            	var mk_table = '';
+							var state_info_div = document.getElementById('state_info');
 							
-
-							});
-						} else{
-							window.alert('Please choose a state');
-						}
-						
-						$(arf_div).append(mk_table);
-		                
-
-		            }
-
-
+							if(data.my_result.length != 0){
+								$.each(data.my_result, function(item, field){
+									mk_table += '<tr><td>' + field.INSTITUTION_STATE + '</td><td>' + field.INSTITUTION_NAME+ '</td></tr>';
+								});
+							} else{
+								window.alert('Please choose a state');
+							}
+							$(state_info_div).append(mk_table);
+		            	}
 		        });
-
-
 		        e.preventDefault();
 		    });
 		});
@@ -77,7 +74,32 @@
 		
 		
 		
-		<h1>jQuery Ajax Test</h1>
+		<h1>Accredited Schools in US</h1>
+		
+		<script>
+		$(function() {
+		    $("#search_schools").autocomplete({
+				source: function( request, response ) {
+				       $.ajax({
+				         url: "/_search_schools",
+				         dataype: "jsonp",
+				         data: {term: request.term},
+				         success: function(data) {
+	                            response(data.names)
+	                     }
+				       });
+				},
+				minLength: 4
+		    });
+		  });
+		
+		
+		</script>
+		
+		<div class="ui-widget">
+			<input id="search_schools">
+		</div>
+		
 		<p><a href=# id=fetch>Get Data</a></p>
 		<div id="sung_div"></div>
 
@@ -95,7 +117,7 @@
 	        <button type="submit">Submit</button>
 	    </form>
 	    
-		<table id="arf" border='1'>
+		<table id="state_info" border='1'>
 			<thead>
 				<tr>
 					<th>State</th>
