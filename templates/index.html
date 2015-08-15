@@ -9,9 +9,9 @@
 		</script>
 		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+		
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon-310.png') }}">
-		<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" type=text/css href="{{ url_for('static', filename='style.css') }}">
 	</head>
 
 	
@@ -58,7 +58,9 @@
 							
 							if(data.my_result.length != 0){
 								$.each(data.my_result, function(item, field){
-									mk_table += '<tr><td>' + field.INSTITUTION_STATE + '</td><td>' + field.INSTITUTION_NAME+ '</td></tr>';
+									mk_table += '<tr><td>' + field.INSTITUTION_STATE+ '</td><td>' + field.INSTITUTION_NAME+ '</td></tr>';
+									console.log(field.INSTITUTION_STATE);
+									console.log(field.INSTITUTION_NAME);
 								});
 							} else{
 								window.alert('Please choose a state');
@@ -89,7 +91,7 @@
 	                     }
 				       });
 				},
-				minLength: 4
+				minLength: 3
 		    });
 		  });
 		

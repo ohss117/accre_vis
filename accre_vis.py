@@ -15,7 +15,7 @@ from flask.helpers import send_from_directory
 # configuration
 DATABASE = 'data.db'
 DEBUG = True
-SECRET_KEY = 'MIIEpAIBAAKCAQEAz1dUJmeVg4yF9BoxHB+UTyXy6mabXYrDmAjja5wXeh9G3+8V'
+SECRET_KEY = os.environ.get("FLSK_SECRET_KEY")
 USERNAME = 'admin'
 PASSWORD = 'default'
 
@@ -31,6 +31,8 @@ def dict_factory(cursor, row):
 
 def connect_db():
     connection = sqlite3.connect(app.config['DATABASE'])
+    connection.enable_load_extension(True)
+    connection.load_extension("./fts5")
     return connection
     
 
@@ -74,9 +76,11 @@ def form(methods=['GET']):
 def search_schools(methods=['GET']):
     name = request.args.get('term')
     
-    search_term = "%" + name + "%"
+    name = name.lower() + "*"
     g.db.row_factory = lambda cursor, row: row[0]
-    query = g.db.execute('SELECT * FROM SCHOOL_NAMES WHERE trim(lower(INSTITUTION_NAME)) LIKE ?', [search_term])
+    
+    query = g.db.execute('SELECT INSTITUTION_NAME, INSTITUTION_ID FROM SCHOOL_NAMES_FTS WHERE SCHOOL_NAMES_FTS MATCH ? ORDER BY RANK LIMIT 10', [name])
+   
     
     return jsonify(names = query.fetchall())    
     

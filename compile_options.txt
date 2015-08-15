@@ -1,0 +1,1 @@
+gcc -g -fPIC -shared -o fts5.so fts5.c -lm
